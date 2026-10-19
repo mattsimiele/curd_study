@@ -1,11 +1,11 @@
 {
   "name": "curd-cheese-study",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
-    "check": "node --check dist/app.js && node --check dist/content.js && node --check dist/learning.js",
+    "check": "node --check dist/app.js && node --check dist/content.js && node --check dist/learning.js && node --check dist/advanced.js",
     "test": "node tests/learning.mjs"
   }
 }

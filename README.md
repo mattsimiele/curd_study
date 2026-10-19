@@ -2,11 +2,12 @@
 
 Live app: https://mattsimiele.github.io/curd_study/
 
-A mobile-friendly, independent cheese study app with 27 original introductory lessons and 81 exercises across the nine subject areas in the public Academy of Cheese Associate outline.
+A mobile-friendly, independent cheese study app with 45 original lessons and 189 exercises across the nine subject areas in the public Academy of Cheese Associate outline.
 
 ## Learning experience
 
-- Three lessons per unit, a winding path and sequential unlocks within each unit. Each unit starts open.
+- Two selectable paths: 27 Foundations lessons and 18 applied CCP study lessons. Three reading cards, source references and six exercises in every applied lesson.
+- Each path has a winding path and sequential unlocks within each unit. Each unit starts open.
 - Single-answer, multiple-selection and ordered-step questions.
 - Immediate explanations, optional lesson reminders, and repeat attempts for missed questions before completion.
 - First-attempt accuracy, combos, unit completion, milestone badges, daily goal and streak.
@@ -17,12 +18,12 @@ Existing browser progress remains under `curd-v1`; the original lesson and quest
 
 ## Development
 
-Serve `dist/` as static files or run `npm run dev`. No build step. Run `npm run check` and `npm test` with Node.js. The rules test checks all 81 exercise definitions, exercise scoring, repeated mistakes, legacy progress and lesson selection.
+Serve `dist/` as static files or run `npm run dev`. No build step. Run `npm run check` and `npm test` with Node.js. The rules test checks all 189 exercise definitions, exercise scoring, repeated mistakes, legacy progress tier navigation, answer shuffling and lesson selection.
 
-`dist/content.js` contains content and source links; `dist/learning.js` contains pure exercise and progress rules; `dist/app.js` contains UI and persistence; `dist/style.css` contains responsive styles.
+`dist/content.js` contains foundations and assembles the course; `dist/advanced.js` contains applied content, domain mapping and references; `dist/learning.js` contains pure exercise and progress rules; `dist/app.js` contains UI and persistence; `dist/style.css` contains responsive styles.
 
 Course outline: https://academyofcheese.org/study-cheese/associate/
-Additional subject guides and primary sources are linked in each unit's About this course & sources panel. Food handling lessons follow UK guidance and direct learners to product instructions.
+Additional subject guides and primary sources are linked in each unit's About this course & sources panel. Foundations reference UK guidance; the advanced retail lessons explicitly scope FDA model-code examples to their applicable setting and local adoption. See [content provenance and note corrections](CONTENT_SOURCES.md).
 
 ## Publishing
 
