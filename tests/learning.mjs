@@ -1,0 +1,10 @@
+import assert from 'node:assert/strict';
+import {modules,lessonCount} from '../dist/content.js';
+import {kind,isCorrect,canCheck,createSession,checkAttempt,advance,migrate,nextLesson} from '../dist/learning.js';
+assert.equal(lessonCount,27);
+let questions=0,types=new Set();
+for(const m of modules){assert.equal(m.lessons.length,3);assert(m.sources.length);for(const l of m.lessons){assert(l.read&&l.title);assert.equal(l.questions.length,3);for(const q of l.questions){questions++;types.add(kind(q));assert(q[0]&&q[3]);assert(new Set(q[1]).size===q[1].length);const indices=Array.isArray(q[2])?q[2]:[q[2]];assert(indices.every(i=>Number.isInteger(i)&&i>=0&&i<q[1].length));assert.equal(isCorrect(q,q[2]),true);if(kind(q)==='order'){assert.equal(indices.length,q[1].length);assert.equal(canCheck(q,[]),false);assert.equal(isCorrect(q,[...q[2]].reverse()),false);}if(kind(q)==='multi'){assert.equal(isCorrect(q,[...q[2]].reverse()),true);assert.equal(isCorrect(q,[]),false);}}}}
+assert.equal(questions,81);assert.deepEqual([...types].sort(),['choice','multi','order']);
+const data=modules[0].lessons[0].questions[0];const s=createSession([{key:'0-0-0',data}]);s.selected=1;assert.equal(checkAttempt(s),false);assert.equal(s.questions.length,2);assert.equal(advance(s),false);s.selected=1;checkAttempt(s);assert.equal(advance(s),false);s.selected=0;assert.equal(checkAttempt(s),true);assert.equal(advance(s),true);assert.equal(s.correct,0);assert.equal(s.resolved.length,1);
+const old={done:['0-0','1-0','7-0'],xp:65,days:['2026-10-19'],notes:[{cheese:'My Cheddar'}],missed:['0-0-1']};const migrated=migrate(old,modules);for(const key of Object.keys(old))assert.deepEqual(migrated[key],old[key]);assert.equal(nextLesson(modules,migrated.done),'0-1');assert.equal(nextLesson(modules,modules.flatMap((m,mi)=>m.lessons.map((l,li)=>`${mi}-${li}`))),null);assert.deepEqual(migrate({done:['999-0'],missed:['1-99-0'],xp:-3},modules).done,[]);
+console.log('PASS: 27 lessons, 81 exercises, three exercise types, retry loop, sequence validation, multiple selection, old progress migration, next lesson selection.');
