@@ -61,3 +61,11 @@ Primary references checked for selected corrections: FDA Food Code 2022, FDA Lis
 The app is an independent study aid. Applied questions are a bridge to deeper study, not an official ACS/Academy exam bank or a full certification course. Lesson references support the topics and explanations; scenarios, amounts and calculations are original instructional examples. FDA Food Code references describe a model code, with local adoption and product exceptions explicitly noted.
 
 The supplied PDFs, extracted text and private timeline remain outside the public deployment. Only original app content and provenance notes are published. Browser progress remains local under `curd-v1`; there is no account sync.
+
+## Cheese library (v0.4)
+
+The supplied *Cheeses to Know* list determines the selection: 106 entries plus Harbison, which is mentioned alongside Winnimere. Every entry has an original three-card identification lesson and four exercises. Twelve three-cheese comparison lessons add six exercises each. References are linked per lesson; producer/consortium references are used where available, with Cheese.com and specialist retailers/publications for many descriptive profiles. This is an identification aid, not an official ACS question bank or complete CCP course.
+
+The profile table is `scripts/cheese-profiles.psv`. Run `python3 scripts/build-cheeses.py` after editing it. Keep existing rows in order because completion IDs use their positions. Append new entries only with a migration for the comparison-lesson IDs. Existing foundation and CCP lesson IDs are unchanged.
+
+Broad names (including Cheddar, Gouda, Robiola and Bergkäse) have qualified descriptions. Sensory traits vary by producer and maturity. Regional/protected examples are identified explicitly. No supplied PDFs, extracted textbook chapters, or private notes are distributed. Exact historical trivia and food-safety rules from the user's notes are not assumed true or added to this identification bank.

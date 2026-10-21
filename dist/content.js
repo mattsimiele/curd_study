@@ -1,3 +1,4 @@
+import {cheeseLessons,comparisonLessons} from './cheeses.js';
 import {advancedLessons} from './advanced.js';
 // Original introductory exercises inspired by the public Associate outline.
 // Existing lesson and question indices are stable to preserve saved progress.
@@ -1252,4 +1253,5 @@ export const modules = [
   }
 ];
 modules.forEach((m,i)=>m.lessons.push(...advancedLessons[i]));
+modules[8].lessons.push(...cheeseLessons,...comparisonLessons);
 export const lessonCount=modules.reduce((n,m)=>n+m.lessons.length,0);

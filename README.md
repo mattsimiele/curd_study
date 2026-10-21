@@ -28,3 +28,9 @@ Additional subject guides and primary sources are linked in each unit's About th
 ## Publishing
 
 `.github/workflows/pages.yml` publishes `dist/` on changes to that directory on `main`, or manual dispatch. Relative assets support the GitHub Pages project path. The private Sites preview is separate and is not automatically updated by this workflow.
+
+### Cheese library — v0.4
+
+Open **Cheeses** for 107 individual identification lessons and 12 comparison flights. Search by name (accents optional), milk or region, or filter by family. Every cheese has three study cards, four exercises, explanations and references. Comparison flights provide side-by-side tables and six exercises. Existing XP, notes and completions are preserved. Total: 164 lessons and 689 exercises.
+
+Data authoring: edit `scripts/cheese-profiles.psv`, run `python3 scripts/build-cheeses.py`, then `npm run check && npm test`.

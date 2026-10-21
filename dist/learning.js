@@ -13,7 +13,7 @@ export function shuffleQuestion(q, random=Math.random) {
   for(let i=order.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
   return [q[0],order.map(i=>q[1][i]),Array.isArray(q[2])?q[2].map(i=>order.indexOf(i)):order.indexOf(q[2]),...q.slice(3)];
 }
-export const inTier=(lesson,tier)=>tier==='ccp'?lesson.level==='ccp':lesson.level!=='ccp';
+export const inTier=(lesson,tier)=>(lesson.level||'foundation')===tier;
 export function createSession(questions, extra={}) {
   return {questions:questions.map(q=>({...q,data:shuffleQuestion(q.data)})),total:questions.length,step:0,selected:null,checked:false,correct:0,combo:0,bestCombo:0,resolved:[],phase:'quiz',...extra};
 }
@@ -40,7 +40,7 @@ export function migrate(saved, modules) {
   if(!saved||typeof saved!=='object')return defaults;
   const validLesson=k=>typeof k==='string'&&/^\d+-\d+$/.test(k)&&!!modules[k.split('-')[0]]?.lessons[k.split('-')[1]];
   const validQuestion=k=>typeof k==='string'&&/^\d+-\d+-\d+$/.test(k)&&!!modules[k.split('-')[0]]?.lessons[k.split('-')[1]]?.questions[k.split('-')[2]];
-  return {...defaults,tier:saved.tier==='foundation'?'foundation':'ccp',done:[...new Set((Array.isArray(saved.done)?saved.done:[]).filter(validLesson))],xp:Number.isFinite(saved.xp)?Math.max(0,saved.xp):0,days:[...new Set((Array.isArray(saved.days)?saved.days:[]).filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)))],notes:Array.isArray(saved.notes)?saved.notes.filter(n=>n&&typeof n==='object'):[],missed:[...new Set((Array.isArray(saved.missed)?saved.missed:[]).filter(validQuestion))],best:saved.best&&typeof saved.best==='object'&&!Array.isArray(saved.best)?saved.best:{},lastLesson:validLesson(saved.lastLesson)?saved.lastLesson:null,tier:'ccp'};
+  return {...defaults,tier:['foundation','cheese'].includes(saved.tier)?saved.tier:'ccp',done:[...new Set((Array.isArray(saved.done)?saved.done:[]).filter(validLesson))],xp:Number.isFinite(saved.xp)?Math.max(0,saved.xp):0,days:[...new Set((Array.isArray(saved.days)?saved.days:[]).filter(d=>typeof d==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d)))],notes:Array.isArray(saved.notes)?saved.notes.filter(n=>n&&typeof n==='object'):[],missed:[...new Set((Array.isArray(saved.missed)?saved.missed:[]).filter(validQuestion))],best:saved.best&&typeof saved.best==='object'&&!Array.isArray(saved.best)?saved.best:{},lastLesson:validLesson(saved.lastLesson)?saved.lastLesson:null};
 }
 export function nextLesson(modules,done,tier) {
   for(let m=0;m<modules.length;m++)for(let l=0;l<modules[m].lessons.length;l++)if((!tier||inTier(modules[m].lessons[l],tier))&&!done.includes(`${m}-${l}`))return `${m}-${l}`;
