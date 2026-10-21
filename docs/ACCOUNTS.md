@@ -35,3 +35,7 @@ Safari → Share → Add to Home Screen → Open as Web App (if shown) → Add. 
 ## Home Screen sign-in link handoff
 
 Safari and the installed app have separate sessions. Request a fresh email, long-press its original sign-in link, copy it, and paste it into the installed app's account screen. The app verifies the one-time token directly with its configured Supabase project; it never navigates to the pasted URL or stores the link. Only the exact project origin and sign-in verification path/types are accepted. Used or expired links need a new email. Import prior guest progress in the browser where it was originally stored, then wait for the account sync status before checking the installed app.
+
+## Password sign-in
+
+Email/password is the primary sign-in. Existing email-link users set their password in Your account while signed in, retaining the same user ID and progress. First-time users and forgotten-password users can verify their email using the fallback link, then set a password. Supabase handles passwords; the application does not save them. Persistent sessions and automatic token refresh remain enabled per browser/app. Clearing device storage, signing out or server-side session revocation can require another login. Default email-sender restrictions still apply to the fallback email flow.

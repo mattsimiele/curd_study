@@ -23,6 +23,8 @@ export class Accounts {
  this.confirmed=rows;this.publish();this.setStatus(this.pending().length?'Changes queued for sync':'All progress synced to your account');
  }catch{if(generation===this.generation)this.setStatus('Not synced yet · changes kept on this device. Retry when online.');}
  finally{if(generation===this.generation){this.busy=false;if(this.pending().length&&this.status==='Changes queued for sync')void this.sync();}}}
+ async signInPassword(email,password){if(!this.client)throw new Error('Account service is not connected yet.');const {data,error}=await this.client.auth.signInWithPassword({email,password});if(error)throw error;await this.activate(data.user);}
+ async setPassword(password,confirmation){if(!this.client||!this.user)throw new Error('Sign in with your email link first.');if(password.length<8)throw new Error('Use at least 8 characters.');if(password!==confirmation)throw new Error('Passwords do not match.');const {error}=await this.client.auth.updateUser({password});if(error)throw error;}
  async sendCode(email){if(!this.client)throw new Error('Account service is not connected yet.');const {error}=await this.client.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:new URL('./',location.href).href}});if(error)throw error;}
  async verify(email,token){const {data,error}=await this.client.auth.verifyOtp({email,token,type:'email'});if(error)throw error;await this.activate(data.user);}
  async verifyLink(value){
