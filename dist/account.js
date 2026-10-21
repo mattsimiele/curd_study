@@ -25,6 +25,15 @@ export class Accounts {
  finally{if(generation===this.generation){this.busy=false;if(this.pending().length&&this.status==='Changes queued for sync')void this.sync();}}}
  async sendCode(email){if(!this.client)throw new Error('Account service is not connected yet.');const {error}=await this.client.auth.signInWithOtp({email,options:{shouldCreateUser:true,emailRedirectTo:new URL('./',location.href).href}});if(error)throw error;}
  async verify(email,token){const {data,error}=await this.client.auth.verifyOtp({email,token,type:'email'});if(error)throw error;await this.activate(data.user);}
+ async verifyLink(value){
+ if(!this.client)throw new Error('Account service is not connected yet.');
+ let link;try{link=new URL(value.trim());}catch{throw new Error('Copy the sign-in link from your newest Curd email, then paste it here.');}
+ const type=link.searchParams.get('type'),token=link.searchParams.get('token');
+ if(link.origin!==new URL(accountConfig.url).origin||link.pathname!=='/auth/v1/verify'||link.username||link.password||!['magiclink','signup','email'].includes(type)||!token||!/^[a-f0-9]{32,128}$/i.test(token))throw new Error('Use the original sign-in link from your Curd email, not the page address after opening it.');
+ const {data,error}=await this.client.auth.verifyOtp({token_hash:token,type});
+ if(error)throw new Error('This sign-in link could not be used. Request a fresh email and copy its link without opening it.');
+ await this.activate(data.user);
+ }
  async signOut(){if(this.pending().length){await this.sync();if(this.pending().length)throw new Error('Your changes have not synced. Connect and retry before signing out.');}const old=this.user;const {error}=await this.client.auth.signOut({scope:'local'});if(error)throw error;await this.activate(null);if(old)this.storage.removeItem(this.prefix(old)+'confirmed');}
  canImport(){return !!this.user&&!this.confirmed.some(e=>e.id===IMPORT_ID)&&!this.pending().some(e=>e.id===IMPORT_ID)&&(this.guest().done?.length||this.guest().notes?.length||this.guest().xp>0);}
  importGuest(){if(!this.canImport())return;const guest=this.guest(),current=this.current();const delta=progressDelta(emptyProgress(),guest);delta.xp=Math.max(0,(guest.xp||0)-current.xp);const event={id:IMPORT_ID,payload:delta,localTime:Date.now()};this.storage.setItem(this.prefix()+'pending:'+event.id,JSON.stringify(event));this.publish();void this.sync();}

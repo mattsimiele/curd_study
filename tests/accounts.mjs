@@ -15,3 +15,17 @@ const phone=await make(new Storage(),'one');assert.equal(phone.state.xp,35);asse
 await one.a.signOut();assert.equal(one.state.xp,10,'sign-out restores guest state, not account data');await one.a.activate({id:'two'});assert.equal(one.state.xp,0,'second account cannot inherit first account state');
 assert.equal(one.a.pending().length,0);
 console.log('PASS: account isolation, explicit guest import, offline queue, sign-out protection, cross-device restoration');
+const login = await make(new Storage(),'new-device');
+let verified;
+login.a.client.auth.verifyOtp=async args=>{verified=args;return {data:{user:{id:'one'}},error:null}};
+const token='a'.repeat(64);
+const link=`https://hpzjdrzyydsvgqlefmuz.supabase.co/auth/v1/verify?token=${token}&type=magiclink&redirect_to=https%3A%2F%2Fmattsimiele.github.io%2Fcurd_study%2F`;
+await login.a.verifyLink(link);
+assert.deepEqual(verified,{token_hash:token,type:'magiclink'});
+assert.equal(login.state.xp,35,'pasted link restores same account on isolated device');
+for(const invalid of [link.replace('hpzjdrzyydsvgqlefmuz','other-project'),link.replace('https:','http:'),link.replace('magiclink','recovery'),link.replace('/verify','/other'),'https://mattsimiele.github.io/curd_study/#access_token=secret','not a URL']){
+ verified=null;await assert.rejects(()=>login.a.verifyLink(invalid));assert.equal(verified,null,'invalid links must not reach auth');
+}
+login.a.client.auth.verifyOtp=async()=>({error:new Error('expired')});
+await assert.rejects(()=>login.a.verifyLink(link),/fresh email/);
+console.log('PASS: Home Screen link login, account restoration, invalid origins/types and expired links');
