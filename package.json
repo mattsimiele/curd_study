@@ -1,11 +1,16 @@
 {
   "name": "curd-cheese-study",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "node server.mjs",
-    "check": "node --check dist/app.js && node --check dist/content.js && node --check dist/learning.js && node --check dist/advanced.js && node --check dist/cheeses.js && node --check dist/cheese-data.js",
-    "test": "node tests/learning.mjs"
+    "check": "node --check dist/app.js && node --check dist/content.js && node --check dist/learning.js && node --check dist/advanced.js && node --check dist/cheeses.js && node --check dist/cheese-data.js && node --check dist/account.js && node --check dist/progress.js",
+    "test": "node tests/learning.mjs && node tests/progress.mjs && node tests/accounts.mjs",
+    "build:auth": "node scripts/build-auth.mjs"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.118.0",
+    "esbuild": "0.28.2"
   }
 }

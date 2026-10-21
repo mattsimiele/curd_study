@@ -34,3 +34,7 @@ Additional subject guides and primary sources are linked in each unit's About th
 Open **Cheeses** for 107 individual identification lessons and 12 comparison flights. Search by name (accents optional), milk or region, or filter by family. Every cheese has three study cards, four exercises, explanations and references. Comparison flights provide side-by-side tables and six exercises. Existing XP, notes and completions are preserved. Total: 164 lessons and 689 exercises.
 
 Data authoring: edit `scripts/cheese-profiles.psv`, run `python3 scripts/build-cheeses.py`, then `npm run check && npm test`.
+
+### Accounts and iPhone — v0.5 preparation
+
+An account screen, email-code login client, append-only cloud progress queue, explicit guest import, and isolated user caches are implemented. Live sign-in requires a configured dedicated Supabase project; until then the app clearly reports setup in progress and retains guest mode. See `docs/ACCOUNTS.md` for schema, email delivery and release validation. iPhone Home Screen metadata, app icons and safe-area layout are included. This is an installable web app, not a native iOS binary.

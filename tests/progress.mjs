@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {emptyProgress,progressDelta,reduceEvents,hasChanges} from '../dist/progress.js';
+const base=emptyProgress();const a={...base,done:['0-0'],xp:25,days:['2026-10-20'],best:{'0-0':100},notes:[{id:'n1',cheese:'Comte'}]};
+const event={id:'a',payload:progressDelta(base,a)};
+assert.deepEqual(reduceEvents([event,event]),a,'retry must be idempotent');
+const b={...base,done:['1-0'],xp:20,best:{'1-0':75}};
+const merged=reduceEvents([event,{id:'b',payload:progressDelta(base,b)}]);
+assert.deepEqual(merged.done,['0-0','1-0']);assert.equal(merged.xp,45);
+const deleted={id:'delete',payload:{deletedNotes:['n1']}};
+assert.equal(reduceEvents([event,deleted,{id:'old',payload:{notes:a.notes}}]).notes.length,0,'stale device must not resurrect deleted notes');
+assert.deepEqual(reduceEvents([{id:'wrong',payload:{missed:['0-0-0']}},{id:'right',payload:{resolved:['0-0-0']}}]).missed,[]);
+assert.deepEqual(reduceEvents([{id:'right',payload:{resolved:['0-0-0']}},{id:'wrong',payload:{missed:['0-0-0']}}]).missed,['0-0-0']);
+assert.equal(hasChanges(progressDelta(a,a)),false);
+console.log('PASS: concurrent progress, idempotent retry, note deletion and mistake resolution');
