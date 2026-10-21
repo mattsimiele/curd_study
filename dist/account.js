@@ -1,4 +1,4 @@
-import {accountConfig} from './config.js';
+import {accountConfig} from './config.js?v=051';
 import {emptyProgress,progressDelta,reduceEvents,hasChanges} from './progress.js';
 const IMPORT_ID='00000000-0000-4000-8000-000000000001';
 export class Accounts {
