@@ -46,3 +46,17 @@ assert.ok(!JSON.stringify([...passwordDevice.a.storage.map]).includes('long-pass
 passwordDevice.a.client.auth.signInWithPassword=async()=>({error:new Error('invalid credentials')});
 await assert.rejects(()=>passwordDevice.a.signInPassword('one@example.test','wrong'),/invalid credentials/);
 console.log('PASS: password sign-in restores progress, password validation, account identity and credential storage');
+globalThis.location={href:'https://mattsimiele.github.io/curd_study/'};
+let signupArgs,resetArgs;
+passwordDevice.a.client.auth.signUp=async args=>{signupArgs=args;return {data:{user:{id:'pending'},session:null}}};
+await assert.rejects(()=>passwordDevice.a.signUp('new@example.test','short','short'),/8 characters/);
+assert.equal(await passwordDevice.a.signUp('new@example.test','new-password','new-password'),false);
+assert.equal(signupArgs.password,'new-password');assert.equal(signupArgs.options.emailRedirectTo,location.href);
+passwordDevice.a.client.auth.resetPasswordForEmail=async(...args)=>{resetArgs=args;return {error:null}};
+await passwordDevice.a.resetPassword('one@example.test');assert.equal(resetArgs[0],'one@example.test');
+passwordDevice.a.client.auth.resetPasswordForEmail=async()=>({error:Object.assign(new Error('email rate limit exceeded'),{code:'over_email_send_rate_limit'})});
+await assert.rejects(()=>passwordDevice.a.resetPassword('one@example.test'),e=>e.code==='over_email_send_rate_limit');
+let emailSent=false;passwordDevice.a.client.auth.signInWithOtp=async()=>{emailSent=true;throw new Error('email limit')};
+passwordDevice.a.client.auth.signInWithPassword=async()=>({data:{user:{id:'one'}}});
+await passwordDevice.a.signInPassword('one@example.test','existing-password');assert.equal(emailSent,false,'password login must never send email');
+console.log('PASS: signup confirmation, reset routing, preserved email-limit errors, password login bypasses email sending');

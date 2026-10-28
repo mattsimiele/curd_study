@@ -39,3 +39,9 @@ Safari and the installed app have separate sessions. Request a fresh email, long
 ## Password sign-in
 
 Email/password is the primary sign-in. Existing email-link users set their password in Your account while signed in, retaining the same user ID and progress. First-time users and forgotten-password users can verify their email using the fallback link, then set a password. Supabase handles passwords; the application does not save them. Persistent sessions and automatic token refresh remain enabled per browser/app. Clearing device storage, signing out or server-side session revocation can require another login. Default email-sender restrictions still apply to the fallback email flow.
+
+## Account flow 0.6.0
+
+Dedicated email/password sign-in, password signup with confirmation, and password reset replace the email-link workaround. PASSWORD_RECOVERY opens the password editor even if an account is already active. Password sign-in never sends email; the built-in sender limit still applies to confirmation and recovery. Errors distinguish invalid credentials, email limits and connectivity. Requests have a 20-second network deadline. Focus-triggered sync no longer redraws an actively edited account form. Guest import stays explicit and visible above account stats. No verification protections were disabled.
+
+Live diagnostic on October 27: both existing accounts have confirmed emails and passwords, but zero cloud progress events. This is not evidence that the user knows either current password. End-to-end verification needs successful user sign-in; do not label mock tests as a live acceptance test.
