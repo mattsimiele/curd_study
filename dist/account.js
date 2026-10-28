@@ -19,7 +19,8 @@ export class Accounts {
  for(let i=0;i<pending.length;i+=50){const {error}=await this.client.from('curd_progress_events').upsert(pending.slice(i,i+50).map(e=>({user_id:user.id,id:e.id,payload:e.payload})),{onConflict:'user_id,id',ignoreDuplicates:true});if(error)throw error;}
  let rows=[],offset=0;while(true){const {data,error}=await this.client.from('curd_progress_events').select('id,payload,sequence').eq('user_id',user.id).order('sequence').range(offset,offset+499);if(error)throw error;rows.push(...data);if(data.length<500)break;offset+=500;}
  if(generation!==this.generation)return;
- this.storage.setItem(this.prefix(user)+'confirmed',JSON.stringify(rows));
+ const confirmedKey=this.prefix(user)+'confirmed',serialized=JSON.stringify(rows);
+ if(this.storage.getItem(confirmedKey)!==serialized)this.storage.setItem(confirmedKey,serialized);
  const received=new Set(rows.map(e=>e.id));for(const e of pending)if(received.has(e.id))this.storage.removeItem(this.prefix(user)+'pending:'+e.id);
  this.confirmed=rows;this.publish();this.setStatus(this.pending().length?'Changes queued for sync':'All progress synced to your account');
  }catch(error){if(generation===this.generation)this.setStatus(`Not synced · saved on this device. ${error.code==='42501'?'Account access was denied.':error.code==='PGRST205'?'Progress storage is unavailable.':error.status===401?'Please sign in again.':'Check your connection and tap Sync now.'}${error.code?' ('+String(error.code).replace(/[^a-zA-Z0-9_]/g,'')+')':''}`);}

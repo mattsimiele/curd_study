@@ -60,3 +60,9 @@ let emailSent=false;passwordDevice.a.client.auth.signInWithOtp=async()=>{emailSe
 passwordDevice.a.client.auth.signInWithPassword=async()=>({data:{user:{id:'one'}}});
 await passwordDevice.a.signInPassword('one@example.test','existing-password');assert.equal(emailSent,false,'password login must never send email');
 console.log('PASS: signup confirmation, reset routing, preserved email-limit errors, password login bypasses email sending');
+let unchangedWrites=0;
+const originalSet=phone.a.storage.setItem.bind(phone.a.storage);
+phone.a.storage.setItem=(key,value)=>{unchangedWrites++;originalSet(key,value)};
+await phone.a.sync();await phone.a.sync();
+assert.equal(unchangedWrites,0,'unchanged sync must not trigger storage events in other tabs');
+console.log('PASS: repeated sync does not rewrite unchanged cached progress');
